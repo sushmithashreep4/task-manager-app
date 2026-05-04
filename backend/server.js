@@ -2,16 +2,21 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const authMiddleware = require("./middleware/authMiddleware");
 
 dotenv.config();
 connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000",
+  credentials: true
+}));
 app.use(express.json());
 
-app.use("/api/tasks", require("./routes/taskRoutes"));
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/tasks", authMiddleware, require("./routes/taskRoutes"));
 
 // 404 handler
 app.use((req, res) => {

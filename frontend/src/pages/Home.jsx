@@ -3,11 +3,12 @@ import api from "../api";
 import TaskForm from "../components/TaskForm";
 import TaskList from "../components/TaskList";
 
-export default function Home() {
+export default function Home({ onLogout }) {
   const [tasks, setTasks]   = useState([]);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [error, setError]   = useState("");
+  const username = localStorage.getItem("username") || "User";
 
   const fetchTasks = async () => {
     try {
@@ -44,11 +45,19 @@ export default function Home() {
           <span style={s.navDivider}>|</span>
           <span style={s.navSub}>Task Management System</span>
         </div>
-        <img
-          src="https://ibots.in/wp-content/uploads/2025/03/Ibots-Logo-2048x827.png"
-          alt="iBots"
-          style={s.logo}
-        />
+        <div style={s.navRight}>
+          <div style={s.userBadge}>
+            <div style={s.userAvatar}>{username.charAt(0).toUpperCase()}</div>
+            <div>
+              <div style={s.userName}>{username}</div>
+              <div style={s.userVerified}>
+                <span style={s.verifiedDot}>✓</span> Verified
+              </div>
+            </div>
+          </div>
+          <img src="https://ibots.in/wp-content/uploads/2025/03/Ibots-Logo-2048x827.png" alt="iBots" style={s.logo} />
+          <button onClick={onLogout} style={s.logoutBtn}>Sign Out</button>
+        </div>
       </nav>
 
       {/* ── ERROR BANNER ── */}
@@ -132,18 +141,34 @@ export default function Home() {
 const s = {
   page: { maxWidth: "1280px", margin: "0 auto", padding: "0 28px 60px" },
 
-  /* navbar */
   navbar: {
     display: "flex", justifyContent: "space-between", alignItems: "center",
     padding: "20px 0", marginBottom: "60px",
     borderBottom: "1px solid rgba(255,255,255,0.06)"
   },
   navLeft:    { display: "flex", alignItems: "center", gap: "12px" },
+  navRight:   { display: "flex", alignItems: "center", gap: "16px" },
   navDot:     { width: 8, height: 8, borderRadius: "50%", background: "#c9a84c", boxShadow: "0 0 8px #c9a84c" },
   navBrand:   { fontSize: "16px", fontWeight: "700", color: "#fff", letterSpacing: "0.5px" },
   navDivider: { color: "rgba(255,255,255,0.2)", fontSize: "18px" },
   navSub:     { fontSize: "13px", color: "rgba(255,255,255,0.4)", fontWeight: "400" },
-  logo:       { height: "36px", width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)" },
+  logo:       { height: "32px", width: "auto", objectFit: "contain", filter: "brightness(0) invert(1)" },
+  userBadge:  { display: "flex", alignItems: "center", gap: "10px" },
+  userAvatar: {
+    width: 36, height: 36, borderRadius: "50%",
+    background: "linear-gradient(135deg,#c9a84c,#a88a3d)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    fontSize: "15px", fontWeight: "800", color: "#0a0a0f"
+  },
+  userName:     { fontSize: "13px", fontWeight: "700", color: "#fff" },
+  userVerified: { display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "#10b981", fontWeight: "600" },
+  verifiedDot:  { fontSize: "10px" },
+  logoutBtn: {
+    padding: "8px 18px", background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.08)", borderRadius: "10px",
+    color: "rgba(255,255,255,0.5)", fontSize: "13px", fontWeight: "600",
+    cursor: "pointer", transition: "all 0.2s"
+  },
 
   /* hero */
   hero:      { textAlign: "center", marginBottom: "60px", animation: "fadeInUp 0.6s ease" },
